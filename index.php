@@ -70,8 +70,8 @@ if (empty($_POST)) {
     $t2 = new cps();
     $t2->id = 1;
     echo $t2->id . "id val" . "<br>";
-    $t2->attribute_key = "link";
-    echo $t2->attribute_key . "<br>";
+    $t2->attribute = "link";
+    echo $t2->attribute . "<br>";
 
     $output = shell_exec('whoami');
     echo "<pre>$output</pre>";

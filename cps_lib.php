@@ -35,13 +35,13 @@ class cps_lib {
       $sql ="CREATE TABLE IF NOT EXISTS $this->tableName (
       id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
       project_id INT(6) NOT NULL,
-      attribute_key VARCHAR(50) NOT NULL,
-      attribute_value TEXT NOT NULL,
+      attribute VARCHAR(50) NOT NULL,
+      value TEXT,
       created_by VARCHAR(50),
       created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_by VARCHAR(50),
       updated_on DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      UNIQUE KEY ukey_project_id_attr_key (project_id, attribute_key),
+      UNIQUE KEY ukey_project_id_attr_key (project_id, attribute),
       FOREIGN KEY (project_id)
               REFERENCES redcap_projects(project_id)
               ON DELETE CASCADE
@@ -100,16 +100,16 @@ class cps_lib {
     }
   }
 
-  function getAttributeData($project_id, $attribute_key) {
+  function getAttributeData($project_id, $attribute) {
     try {
-      $query = $this->conn->prepare("SELECT * from $this->tableName where project_id = :project_id and attribute_key = :attribute_key");
+      $query = $this->conn->prepare("SELECT * from $this->tableName where project_id = :project_id and attribute = :attribute");
       $query->bindParam(":project_id", $project_id, PDO::PARAM_INT);
-      $query->bindParam(":attribute_key", $attribute_key, PDO::PARAM_STR);
+      $query->bindParam(":attribute", $attribute, PDO::PARAM_STR);
       $query->setFetchMode(PDO::FETCH_CLASS, 'cps');
       $query->execute();
       $res = $query->fetchAll(PDO::FETCH_ASSOC);
 
-      return $res[0]['attribute_value'];
+      return $res[0]['value'];
     } catch(PDOException $e) {
       echo "Error: " . $e->getMessage();
     }
@@ -119,11 +119,11 @@ class cps_lib {
 
   function insertData($inputRecord) {
     try {
-      $stmt = $this->conn->prepare("INSERT INTO $this->tableName (project_id, attribute_key, attribute_value, created_by)
-        VALUES (:project_id, :attribute_key, :attribute_value, :created_by)");
+      $stmt = $this->conn->prepare("INSERT INTO $this->tableName (project_id, attribute, value, created_by)
+        VALUES (:project_id, :attribute, :value, :created_by)");
       $stmt->bindParam(":project_id", $inputRecord->project_id, PDO::PARAM_INT);
-      $stmt->bindParam(":attribute_key", $inputRecord->attribute_key, PDO::PARAM_STR);
-      $stmt->bindParam(":attribute_value", $inputRecord->attribute_value, PDO::PARAM_STR);
+      $stmt->bindParam(":attribute", $inputRecord->attribute, PDO::PARAM_STR);
+      $stmt->bindParam(":value", $inputRecord->value, PDO::PARAM_STR);
       $stmt->bindParam(":created_by", $inputRecord->created_by, PDO::PARAM_STR);
       
       $stmt->execute();
@@ -136,11 +136,11 @@ class cps_lib {
 
   function updateData($inputRecord) {
     try {
-      $stmt = $this->conn->prepare("UPDATE $this->tableName SET project_id=:project_id, attribute_key=:attribute_key, 
-        attribute_value=:attribute_value, created_by=:created_by, updated_by =:updated_by WHERE id=:id");
+      $stmt = $this->conn->prepare("UPDATE $this->tableName SET project_id=:project_id, attribute=:attribute, 
+        value=:value, created_by=:created_by, updated_by =:updated_by WHERE id=:id");
       $stmt->bindParam(':project_id', $inputRecord->project_id, PDO::PARAM_INT);
-      $stmt->bindParam(':attribute_key', $inputRecord->attribute_key, PDO::PARAM_STR);
-      $stmt->bindParam(':attribute_value', $inputRecord->attribute_value, PDO::PARAM_STR);
+      $stmt->bindParam(':attribute', $inputRecord->attribute, PDO::PARAM_STR);
+      $stmt->bindParam(':value', $inputRecord->value, PDO::PARAM_STR);
       $stmt->bindParam(':created_by', $inputRecord->created_by, PDO::PARAM_STR);
       $stmt->bindParam(':updated_by', $inputRecord->updated_by, PDO::PARAM_STR);
       $stmt->bindParam(':id', $inputRecord->id, PDO::PARAM_INT);
