@@ -20,7 +20,8 @@ if (!file_exists('../../redcap_connect.php')) {
 }
 
 require_once APP_PATH_DOCROOT . "ProjectGeneral/form_renderer_functions.php";
-
+require_once (__DIR__.'/../deploy/plugins/redcap_custom_project_settings/cps.php');
+require_once (__DIR__.'/../deploy/plugins/redcap_custom_project_settings/cps_lib.php');
 
 $debug = array();
 
@@ -65,6 +66,21 @@ if (empty($_POST)) {
     // RENDER THE PAGE
     include APP_PATH_DOCROOT . 'ProjectGeneral/header.php';
 
+    echo "included file". '<br>';
+    $t2 = new cps();
+    $t2->id = 1;
+    echo $t2->id . "id val" . "<br>";
+    $t2->attribute_key = "link";
+    echo $t2->attribute_key . "<br>";
+
+    $output = shell_exec('whoami');
+    echo "<pre>$output</pre>";
+
+    $table = new cps_lib();
+?>
+    <b>'Hello world!'</b>
+    <?php
+    
     // Page footer
     include APP_PATH_DOCROOT . 'ProjectGeneral/footer.php';
 }
