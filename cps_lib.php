@@ -8,8 +8,6 @@ class cps_lib {
     global $conn;
     $this->conn = $conn;
     $this->tableName = 'uf_project_settings';
-    // $sql = "SELECT * FROM uf_project_settings WHERE project_id = 1";
-    echo 'Inside constructor' . '<br>';
 
     
     if ($this->isTableExists()) {
@@ -22,8 +20,9 @@ class cps_lib {
   }
 
   function isTableExists() {
+
     $sql = "SHOW TABLES LIKE '$this->tableName'";
-    // echo $sql . '<br>';
+
     if ($result=$this->conn->query($sql)) {
         if ($result->num_rows > 0) {
           return true;
@@ -35,6 +34,7 @@ class cps_lib {
   function createTable() {
     
     $sql ="CREATE TABLE IF NOT EXISTS $this->tableName (
+    
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     project_id INT(6) NOT NULL,
     attribute VARCHAR(50) NOT NULL,
@@ -58,7 +58,7 @@ class cps_lib {
 
   function save($records) {
     foreach ($records as $item) {
-      if ($item->id === NULL) {
+      if ($item->id == NULL) {
         $this->insertData($item);
       } else {
         $this->updateData($item);
@@ -67,8 +67,9 @@ class cps_lib {
   }
 
   function getDataByProjectId($project_id) {
-    // echo 'pr_id ' . $project_id . '<br>';
-    $sql = "SELECT id, project_id, attribute, value, created_by, updated_by, created_on, updated_on from uf_project_settings where project_id = ?";
+    
+    $sql = "SELECT id, project_id, attribute, value, created_by, updated_by, created_on, updated_on from $this->tableName where project_id = ?";
+
     if ($stmt=$this->conn->prepare($sql)) {
       $stmt->bind_param("i", $project_id);
       $stmt->execute();
@@ -78,6 +79,7 @@ class cps_lib {
 
       $result = array();
       while ($stmt->fetch()) {
+        //creating cps object 
         $row_obj = new cps();
         $row_obj->id = $col1;
         $row_obj->project_id = $col2;
@@ -87,17 +89,17 @@ class cps_lib {
         $row_obj->updated_by = $col6;
         $row_obj->created_on = $col7;
         $row_obj->updated_on = $col8;
+
+        //collecting the objects into a array
         $result[] = $row_obj;
       }
-      // echo '<pre>';
-      // echo var_dump($result);
-      // echo '<pre>';
+      return $result;
     }
   }
 
   function getAttributeData($project_id, $attribute) {
 
-    $sql = "SELECT value from uf_project_settings where project_id = ? and attribute = ?";
+    $sql = "SELECT value from $this->tableName where project_id = ? and attribute = ?";
     if ($stmt=$this->conn->prepare($sql)) {
       $stmt->bind_param("is", $project_id, $attribute);
       $stmt->execute();
@@ -105,7 +107,7 @@ class cps_lib {
       /* bind variables to prepared statement */
       $stmt->bind_result($col1);
       $stmt->fetch();
-      // echo $col1;
+
       return $col1;
     }
   }  
@@ -132,7 +134,6 @@ class cps_lib {
         echo "Record updated successfully with id " . $inputRecord->id . "<br>";
         return;
       }
-      // echo "here" . "<br>";
     }
     echo "Update failed for id " . $inputRecord->id . "<br>";
   }
@@ -145,7 +146,6 @@ class cps_lib {
         echo "Record deleted successfully with id " . $inputRecord->id . "<br>";
         return;
       }
-      echo "here" . "<br>";
     }
     echo "Delete failed for id " . $inputRecord->id . "<br>";
   }
