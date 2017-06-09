@@ -3,75 +3,56 @@
 class cps_lib {
   var $tableName;
   var $conn;
-  
-  function cps_lib () {
-    $host = "localhost";
-    $username = "vagrant";
-    $password = "";
-    $dbname = 'redcap';
-    $this->tableName = 'uf_project_settings';
-    
-    try {
-      $this->conn = new PDO('mysql:host='.$this->host . ';dbname=' . $dbname, $username, $password);
-      $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch(PDOException $e) {
-      echo $e->getMessage();
-      die();
-    }
 
-    $tableCheck = $this->isTableExists();;
+  function cps_lib () {
+    global $conn;
+    $this->conn = $conn;
+    $this->tableName = 'uf_project_settings';
+    // $sql = "SELECT * FROM uf_project_settings WHERE project_id = 1";
+    echo 'Inside constructor' . '<br>';
+
     
-    if ($tableCheck) {
-      echo 'Table '. $this->tableName . ' exists in db.' . PHP_EOL;
+    if ($this->isTableExists()) {
+      echo 'Table '. $this->tableName . ' exists in db. ' . $dbname . '<br>';
     } else {
-      echo 'Table ', $this->tableName . ' does not exist in db.' . PHP_EOL;
+      echo 'Table ', $this->tableName . ' does not exist in db.' . '<br>';
       echo 'Creating the table.' . PHP_EOL;
       $this->createTable();
     }
   }
 
-  function createTable() {
-    try {
-      $sql ="CREATE TABLE IF NOT EXISTS $this->tableName (
-      id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-      project_id INT(6) NOT NULL,
-      attribute VARCHAR(50) NOT NULL,
-      value TEXT,
-      created_by VARCHAR(50),
-      created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_by VARCHAR(50),
-      updated_on DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      UNIQUE KEY ukey_project_id_attr_key (project_id, attribute),
-      FOREIGN KEY (project_id)
-              REFERENCES redcap_projects(project_id)
-              ON DELETE CASCADE
-      );" ;
-     $this->conn->exec($sql);
-     print("Created $this->tableName Table.\n");
-
-    } catch(PDOException $e) {
-      echo $e->getMessage();
+  function isTableExists() {
+    $sql = "SHOW TABLES LIKE '$this->tableName'";
+    // echo $sql . '<br>';
+    if ($result=$this->conn->query($sql)) {
+        if ($result->num_rows > 0) {
+          return true;
+        }
     }
+    return false;
   }
 
-  function isTableExists() {
+  function createTable() {
+    
+    $sql ="CREATE TABLE IF NOT EXISTS $this->tableName (
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    project_id INT(6) NOT NULL,
+    attribute VARCHAR(50) NOT NULL,
+    value TEXT,
+    created_by VARCHAR(50),
+    created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_by VARCHAR(50),
+    updated_on DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY ukey_project_id_attr_key (project_id, attribute),
+    FOREIGN KEY (project_id)
+            REFERENCES redcap_projects(project_id)
+            ON DELETE CASCADE
+    );" ;
 
-    $prep_stmt = $this->conn->prepare("SHOW TABLES LIKE :table_name");
-
-    $prep_stmt->bindParam(":table_name", $this->tableName, PDO::PARAM_STR);
-
-    $sqlResult = $prep_stmt->execute();
-    if ($sqlResult) {
-        $row = $prep_stmt->fetch(PDO::FETCH_NUM);
-        if ($row[0]) {
-            return true;
-        } else {
-            return false;
-        }
+    if ($this->conn->query($sql)) {
+      echo "Created $this->tableName Table.";
     } else {
-        //some PDO error occurred
-        echo("Could not check if table exists, Error: ".var_export($this->conn->errorInfo(), true));
-        return false;
+      echo "Table creation failed.";
     }
   }
 
@@ -86,71 +67,87 @@ class cps_lib {
   }
 
   function getDataByProjectId($project_id) {
-    try {
-      $query = $this->conn->prepare("SELECT * from $this->tableName where project_id = :project_id");
-      $query->bindParam(":project_id", $project_id, PDO::PARAM_INT);
-      $query->setFetchMode(PDO::FETCH_CLASS, 'cps');
-      $query->execute();
-      $res = $query->fetchAll(PDO::FETCH_ASSOC);
+    // echo 'pr_id ' . $project_id . '<br>';
+    $sql = "SELECT id, project_id, attribute, value, created_by, updated_by, created_on, updated_on from uf_project_settings where project_id = ?";
+    if ($stmt=$this->conn->prepare($sql)) {
+      $stmt->bind_param("i", $project_id);
+      $stmt->execute();
 
-      print_r ($res);
-      return $res;
-    } catch(PDOException $e) {
-      echo "Error: " . $e->getMessage();
+      /* bind variables to prepared statement */
+      $stmt->bind_result($col1, $col2, $col3, $col4, $col5, $col6, $col7, $col8);
+
+      $result = array();
+      while ($stmt->fetch()) {
+        $row_obj = new cps();
+        $row_obj->id = $col1;
+        $row_obj->project_id = $col2;
+        $row_obj->attribute = $col3;
+        $row_obj->value = $col4;
+        $row_obj->created_by = $col5;
+        $row_obj->updated_by = $col6;
+        $row_obj->created_on = $col7;
+        $row_obj->updated_on = $col8;
+        $result[] = $row_obj;
+      }
+      // echo '<pre>';
+      // echo var_dump($result);
+      // echo '<pre>';
     }
   }
 
   function getAttributeData($project_id, $attribute) {
-    try {
-      $query = $this->conn->prepare("SELECT * from $this->tableName where project_id = :project_id and attribute = :attribute");
-      $query->bindParam(":project_id", $project_id, PDO::PARAM_INT);
-      $query->bindParam(":attribute", $attribute, PDO::PARAM_STR);
-      $query->setFetchMode(PDO::FETCH_CLASS, 'cps');
-      $query->execute();
-      $res = $query->fetchAll(PDO::FETCH_ASSOC);
 
-      return $res[0]['value'];
-    } catch(PDOException $e) {
-      echo "Error: " . $e->getMessage();
+    $sql = "SELECT value from uf_project_settings where project_id = ? and attribute = ?";
+    if ($stmt=$this->conn->prepare($sql)) {
+      $stmt->bind_param("is", $project_id, $attribute);
+      $stmt->execute();
+
+      /* bind variables to prepared statement */
+      $stmt->bind_result($col1);
+      $stmt->fetch();
+      // echo $col1;
+      return $col1;
     }
   }  
 
-
-
   function insertData($inputRecord) {
-    try {
-      $stmt = $this->conn->prepare("INSERT INTO $this->tableName (project_id, attribute, value, created_by)
-        VALUES (:project_id, :attribute, :value, :created_by)");
-      $stmt->bindParam(":project_id", $inputRecord->project_id, PDO::PARAM_INT);
-      $stmt->bindParam(":attribute", $inputRecord->attribute, PDO::PARAM_STR);
-      $stmt->bindParam(":value", $inputRecord->value, PDO::PARAM_STR);
-      $stmt->bindParam(":created_by", $inputRecord->created_by, PDO::PARAM_STR);
-      
-      $stmt->execute();
-
-      echo "New record created successfully." . PHP_EOL;
-    } catch(PDOException $e) {
-      echo "Error: " . $e->getMessage();
+    $sql = "INSERT INTO $this->tableName (project_id, attribute, value, created_by) VALUES (?, ?, ?, ?)";    
+    if ($stmt=$this->conn->prepare($sql)) {
+      $stmt->bind_param("isss", $inputRecord->project_id, $inputRecord->attribute, $inputRecord->value, $inputRecord->created_by);
+      if ($stmt->execute()) {
+        echo "New record created successfully." . '<br>';
+        return;
+      }
     }
+    echo "Insertion failed." . '<br>';
   }
 
   function updateData($inputRecord) {
-    try {
-      $stmt = $this->conn->prepare("UPDATE $this->tableName SET project_id=:project_id, attribute=:attribute, 
-        value=:value, created_by=:created_by, updated_by =:updated_by WHERE id=:id");
-      $stmt->bindParam(':project_id', $inputRecord->project_id, PDO::PARAM_INT);
-      $stmt->bindParam(':attribute', $inputRecord->attribute, PDO::PARAM_STR);
-      $stmt->bindParam(':value', $inputRecord->value, PDO::PARAM_STR);
-      $stmt->bindParam(':created_by', $inputRecord->created_by, PDO::PARAM_STR);
-      $stmt->bindParam(':updated_by', $inputRecord->updated_by, PDO::PARAM_STR);
-      $stmt->bindParam(':id', $inputRecord->id, PDO::PARAM_INT);
-
-      $stmt->execute();
-
-      echo "Record updated successfully with id " . $this->inputRecord->id . PHP_EOL;
-    } catch(PDOException $e) {
-      echo "Error: " . $e->getMessage();
+    $sql = "UPDATE $this->tableName SET project_id= ?, attribute= ?, 
+        value= ?, created_by= ?, updated_by = ? WHERE id= ?";
+    if ($stmt=$this->conn->prepare($sql)) {
+      $stmt->bind_param('issssi', $inputRecord->project_id, $inputRecord->attribute, 
+          $inputRecord->value, $inputRecord->created_by, $inputRecord->updated_by, $inputRecord->id);
+      if ($stmt->execute()) {
+        echo "Record updated successfully with id " . $inputRecord->id . "<br>";
+        return;
+      }
+      // echo "here" . "<br>";
     }
+    echo "Update failed for id " . $inputRecord->id . "<br>";
+  }
+
+  function deleteData($id) {
+    $sql = "DELETE FROM $this->tableName WHERE id= ?";
+    if ($stmt=$this->conn->prepare($sql)) {
+      $stmt->bind_param('i', $id);
+      if ($stmt->execute()) {
+        echo "Record deleted successfully with id " . $inputRecord->id . "<br>";
+        return;
+      }
+      echo "here" . "<br>";
+    }
+    echo "Delete failed for id " . $inputRecord->id . "<br>";
   }
 
 }
