@@ -11,10 +11,10 @@ class cps_lib {
 
     
     if ($this->isTableExists()) {
-      echo 'Table '. $this->tableName . ' exists in db. ' . $dbname . '<br>';
+      //echo 'Table '. $this->tableName . ' exists in db. ' . $dbname . '<br>';
     } else {
-      echo 'Table ', $this->tableName . ' does not exist in db.' . '<br>';
-      echo 'Creating the table.' . PHP_EOL;
+      //echo 'Table ', $this->tableName . ' does not exist in db.' . '<br>';
+      //echo 'Creating the table.' . PHP_EOL;
       $this->createTable();
     }
   }
