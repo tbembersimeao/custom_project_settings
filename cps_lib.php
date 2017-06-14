@@ -1,12 +1,12 @@
 <?php
+require_once "cps.php";
 
 class cps_lib {
   var $tableName;
   var $conn;
 
-  function cps_lib () {
-    global $conn;
-    $this->conn = $conn;
+  function cps_lib ($conn_object) {
+    $this->conn = $conn_object;
     $this->tableName = 'uf_project_settings';
 
     
