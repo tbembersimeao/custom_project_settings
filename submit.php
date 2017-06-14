@@ -28,12 +28,8 @@
 		$i++;
 	}
 	
-	//print_r($cps_array);
 	// Save data.
 	$cps_lib->save($cps_array); 
-
-	//print_r($_SERVER['SERVER_NAME']);
-	//echo $_SERVER['SERVER_NAME'];
-	// Redirect to same page after saving to render the saved data.
+	//print_r($cps_array);
   	
 ?>

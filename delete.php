@@ -11,6 +11,7 @@
 	$cps_lib = new cps_lib($conn);
 
 	$id = $_POST['id'];
-	print_r($id);
+
+	// Delete data
 	$cps_lib->deleteData($id);
 ?>

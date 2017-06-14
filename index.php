@@ -66,7 +66,6 @@ $config['can_edit'] = (SUPER_USER || $user_rights['reports']);
 // Fetch custom settings data and store it
 $pid = $qs_params['pid'];
 $cps = new cps_lib($conn);
-$cps_data = $cps->getDataByProjectId($pid);
 //print_r(($cps_data));
 
 // This is the initial load (via GET) - so lets render the page
@@ -274,7 +273,7 @@ if (empty($_POST)) {
 					data: {'id': id}
 				}).done(function(msg){
 					thisBtn.closest('tr').remove();
-					alert('Deleted successfully!');
+					//alert('Deleted successfully!');
 				});
 			} else{
 				thisBtn.closest('tr').remove();
@@ -317,12 +316,9 @@ if (empty($_POST)) {
 				type: "POST",
 				url: "submit.php",
 				data: {'arr' : JSON.stringify(cps_array)}
-			}).done(function(msg){
+			}).done(function(response){
 				alert('Saved successfully!');
-				<?php
-					$cps_data = $cps->getDataByProjectId($pid);
-				?>
-				renderCpsData();
+				//renderCpsData();
 			});
 		});
 	}
@@ -332,10 +328,10 @@ if (empty($_POST)) {
 		/* 	Default form view has only two rows. 
 			Add more rows if data to be rendered has more than two rows.
 		*/
-		alert('in render cps');
+		<?php $cps_data = $cps->getDataByProjectId($pid); ?>
 		var cpsDataLength = <?php echo count($cps_data); ?>;
 		var trows = document.getElementById('customTable').getElementsByTagName('tr');
-		if(trows-2 != cpsDataLength){
+		if(trows.length-2 != cpsDataLength){
 			for(var i=2;i<cpsDataLength;i++){
 				addNewRow();
 			}
