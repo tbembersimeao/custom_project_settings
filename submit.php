@@ -23,7 +23,8 @@
 	}
 	
 	// Save data.
-	$cps_lib->save($cps_array); 
-	//print_r($cps_array);
-  	
+	$cps_lib->save($cps_array);
+	$pid = reset($cps_array)->project_id;
+	$cps_data = $cps_lib->getDataByProjectId($pid); 
+	print_r(json_encode(json_encode($cps_data)));  	
 ?>
