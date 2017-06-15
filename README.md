@@ -12,8 +12,7 @@ For your REDCap extension to work with the REDCap Custom Project Settings Plugin
     // Read configuration data from redcap_custom_project_settings data store
     $my_extension_name = 'the_name_of_your_extension';
     require_once "../../plugins/redcap_custom_project_settings/cps_lib.php";
-    global $conn;
-    $cps = new cps_lib($conn);
+    $cps = new cps_lib();
     $my_settings = $cps->getAttributeData($project_id, $my_extension_name);
 
 Use the name of your extension in he vlaue assigned to $my_extension_name.  You must use the same name as the attribute in REDCap Custom Project Settings for the projects where you would like to use your extension. If the query fails, your extension may fail for lack of data.
