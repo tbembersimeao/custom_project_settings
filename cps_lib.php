@@ -1,12 +1,20 @@
 <?php
 require_once "cps.php";
 
+if (!file_exists('../../redcap_connect.php')) {
+    $REDCAP_ROOT = "/var/www/redcap";
+    require_once $REDCAP_ROOT . '/redcap_connect.php';
+} else {
+    require_once '../../redcap_connect.php';
+}
+
 class cps_lib {
   var $tableName;
   var $conn;
 
-  function cps_lib ($conn_object) {
-    $this->conn = $conn_object;
+  function cps_lib () {
+    global $conn;
+    $this->conn = $conn;
     $this->tableName = 'uf_project_settings';
 
     
@@ -50,9 +58,9 @@ class cps_lib {
     );" ;
 
     if ($this->conn->query($sql)) {
-      echo "Created $this->tableName Table.";
+      // echo "Created $this->tableName Table.";
     } else {
-      echo "Table creation failed.";
+      // echo "Table creation failed.";
     }
   }
 
@@ -117,11 +125,11 @@ class cps_lib {
     if ($stmt=$this->conn->prepare($sql)) {
       $stmt->bind_param("isss", $inputRecord->project_id, $inputRecord->attribute, $inputRecord->value, $inputRecord->created_by);
       if ($stmt->execute()) {
-        //echo "New record created successfully." . '<br>';
+        // echo "New record created successfully." . '<br>';
         return;
       }
     }
-    echo "Insertion failed." . '<br>';
+    // echo "Insertion failed." . '<br>';
   }
 
   function updateData($inputRecord) {
@@ -131,11 +139,11 @@ class cps_lib {
       $stmt->bind_param('issssi', $inputRecord->project_id, $inputRecord->attribute, 
           $inputRecord->value, $inputRecord->created_by, $inputRecord->updated_by, $inputRecord->id);
       if ($stmt->execute()) {
-        //echo "Record updated successfully with id " . $inputRecord->id . "<br>";
+        // echo "Record updated successfully with id " . $inputRecord->id . "<br>";
         return;
       }
     }
-    echo "Update failed for id " . $inputRecord->id . "<br>";
+    // echo "Update failed for id " . $inputRecord->id . "<br>";
   }
 
   function deleteData($id) {
@@ -143,11 +151,11 @@ class cps_lib {
     if ($stmt=$this->conn->prepare($sql)) {
       $stmt->bind_param('i', $id);
       if ($stmt->execute()) {
-        echo "Record deleted successfully with id " . $inputRecord->id . "<br>";
+        // echo "Record deleted successfully with id " . $inputRecord->id . "<br>";
         return;
       }
     }
-    echo "Delete failed for id " . $inputRecord->id . "<br>";
+    // echo "Delete failed for id " . $inputRecord->id . "<br>";
   }
 
 }
