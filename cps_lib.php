@@ -1,12 +1,20 @@
 <?php
 require_once "cps.php";
 
+if (!file_exists('../../redcap_connect.php')) {
+    $REDCAP_ROOT = "/var/www/redcap";
+    require_once $REDCAP_ROOT . '/redcap_connect.php';
+} else {
+    require_once '../../redcap_connect.php';
+}
+
 class cps_lib {
   var $tableName;
   var $conn;
 
-  function cps_lib ($conn_object) {
-    $this->conn = $conn_object;
+  function cps_lib () {
+    global $conn;
+    $this->conn = $conn;
     $this->tableName = 'uf_project_settings';
 
     

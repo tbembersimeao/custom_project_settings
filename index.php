@@ -55,7 +55,7 @@ if (!empty($settings)) $config = array_merge($config,$settings);
 $debug['config_after_settings'] = $config;
 
 // Get User Rights
-global $user_rights, $conn;
+global $user_rights;
 $user_rights = REDCap::getUserRights(USERID);
 $user_rights = $user_rights[USERID];
 
@@ -65,7 +65,7 @@ $config['can_edit'] = (SUPER_USER || $user_rights['reports']);
 
 // Fetch custom settings data and store it
 $pid = $qs_params['pid'];
-$cps = new cps_lib($conn);
+$cps = new cps_lib();
 //print_r(($cps_data));
 
 // This is the initial load (via GET) - so lets render the page
