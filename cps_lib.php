@@ -117,7 +117,7 @@ class cps_lib {
     if ($stmt=$this->conn->prepare($sql)) {
       $stmt->bind_param("isss", $inputRecord->project_id, $inputRecord->attribute, $inputRecord->value, $inputRecord->created_by);
       if ($stmt->execute()) {
-        echo "New record created successfully." . '<br>';
+        //echo "New record created successfully." . '<br>';
         return;
       }
     }
@@ -131,7 +131,7 @@ class cps_lib {
       $stmt->bind_param('issssi', $inputRecord->project_id, $inputRecord->attribute, 
           $inputRecord->value, $inputRecord->created_by, $inputRecord->updated_by, $inputRecord->id);
       if ($stmt->execute()) {
-        echo "Record updated successfully with id " . $inputRecord->id . "<br>";
+        //echo "Record updated successfully with id " . $inputRecord->id . "<br>";
         return;
       }
     }
