@@ -318,7 +318,9 @@ if (empty($_POST)) {
 				data: {'arr' : JSON.stringify(cps_array)}
 			}).done(function(response){
 				alert('Saved successfully!');
-				//renderCpsData();
+                /* Temporary fix: Reload page to render latest data.
+                */
+                window.location.reload();
 			});
 		});
 	}
