@@ -105,6 +105,7 @@ if (empty($_POST)) {
                 padding: 2px 5px;
                 border: 1px solid #c1c1c1;
                 width: 95%;
+                resize: vertical;
             }
             .btn{
                 padding: 0.2em 0.6em 0.3em;
@@ -319,7 +320,7 @@ if (empty($_POST)) {
                 data: {'arr' : JSON.stringify(cps_array)}
             }).done(function(response){
                 alert('Saved successfully!');
-                var parsedRes = $.parseJSON(response);
+                var parsedRes = response;
                 var trows = document.getElementById('customTable').getElementsByTagName('tr');
                 for(var i=0;i<parsedRes.length;i++){
                     trows[i+1].getElementsByClassName('form-text')[0].value = parsedRes[i].attribute;
