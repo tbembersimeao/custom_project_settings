@@ -21,8 +21,8 @@ if (!file_exists('../../redcap_connect.php')) {
 
 require_once APP_PATH_DOCROOT . "ProjectGeneral/form_renderer_functions.php";
 require_once "cps_lib.php";
-// require_once (__DIR__.'/../deploy/plugins/redcap_custom_project_settings/cps.php');
-// require_once (__DIR__.'/../deploy/plugins/redcap_custom_project_settings/cps_lib.php');
+// require_once (__DIR__.'/../deploy/plugins/custom_project_settings/cps.php');
+// require_once (__DIR__.'/../deploy/plugins/custom_project_settings/cps_lib.php');
 
 $debug = array();
 
@@ -221,8 +221,8 @@ if (empty($_POST)) {
             <p><span>NOTE: </span>This page does not install REDCap extensions. You will need to install extensions separately.</p>
         </div>
 <?php
-    
-    
+
+
     // Page footer
 
     include APP_PATH_DOCROOT . 'ProjectGeneral/footer.php';
@@ -230,18 +230,18 @@ if (empty($_POST)) {
 ?>
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function(){
-        bindAdd(); 
-        bindDelete(); 
-        bindSaveUpdates(); 
+        bindAdd();
+        bindDelete();
+        bindSaveUpdates();
         renderCpsData();
-        
+
     });
 
     // Bind add row click event to add a new row to enter new configuration details(attribute and value).
     function bindAdd(){
         var addRow = document.getElementById('addRow');
         addRow.addEventListener('click', function(){
-            addNewRow();    
+            addNewRow();
         });
     }
 
@@ -289,10 +289,10 @@ if (empty($_POST)) {
             deleteBtns[i].addEventListener('click', function(){
                 var thisBtn = $(this);
                 deleteThisRow(thisBtn);
-                
+
             });
         }
-        
+
     }
 
     //Bind save updates click to save/update all configuration data from the cps form.
@@ -336,7 +336,7 @@ if (empty($_POST)) {
 
     // Render data to the form on page load.
     function renderCpsData(){
-        /*  Default form view has only two rows. 
+        /*  Default form view has only two rows.
             Add more rows if data to be rendered has more than two rows.
         */
         <?php $cps_data = $cps->getDataByProjectId($pid); ?>
@@ -359,7 +359,7 @@ if (empty($_POST)) {
                 $project_id = $item->project_id;
                 $id = $item->id;
         ?>
-            
+
             var i = <?php echo $i; ?>;
 
             trows[i].getElementsByClassName('form-text')[0].value = '<?php echo $attr; ?>';
@@ -371,5 +371,5 @@ if (empty($_POST)) {
         ?>
     }
 
-    
+
 </script>

@@ -18,15 +18,15 @@
 									'</div><div id="lbl-modules" style="color:#999;">Optional</div></td>'+
 									'<td valign="top" style="padding-left:30px;"><div class="chklisthdr">'+
 									'<span>Custom Project Settings</span></div>'+
-									'<div class="chklisttext">Add settings for REDCap extensions using '+ 
-									'<a href="'+base_path+'/plugins/redcap_custom_project_settings/index.php?pid=<?php echo $pid; ?>"'+
+									'<div class="chklisttext">Add settings for REDCap extensions using '+
+									'<a href="'+base_path+'/plugins/custom_project_settings/index.php?pid=<?php echo $pid; ?>"'+
 									'style="text-decoration:underline;color:#800000;">Custom Project Settings</a>. '+
 									'The extensions need to be installed separately. You will also need to know the attribute each extension expects to read and how to format the values the extension needs to configure itself. '+
 									' </div></td></tr></tbody></table></div>';
 
 				$("#setupChklist-modify_project").after(cpsHookHtml);
 			});
-				
+
 			</script>
 			<?php
 		}
