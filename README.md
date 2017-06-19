@@ -33,5 +33,10 @@ Use the name of your extension in the value assigned to $my_extension_name.  You
 
 When using the local test environment provided by UF CTS-IT's [redcap_deployment](https://github.com/ctsit/redcap_deployment) tools ([https://github.com/ctsit/redcap_deployment](https://github.com/ctsit/redcap_deployment)), you can use the deployment tools to configure extension for testing in the local VM.  If you clone this repo as a child of the redcap_deployment repo, you can configure from the root of the redcap_deployment repo like this:
 
+    fab instance:vagrant test_hook:redcap_every_page_top,redcap_custom_project_settings/cps_hook.php
+    fab instance:vagrant test_plugin:redcap_custom_project_settings
+
+If you clone the project with it's short name like this: `git clone ssh://git@ctsit-forge.ctsi.ufl.edu/redcap_custom_project_settings.git custom_project_settings` you use the project's shortname for testing:
+
     fab instance:vagrant test_hook:redcap_every_page_top,custom_project_settings/cps_hook.php
     fab instance:vagrant test_plugin:custom_project_settings
