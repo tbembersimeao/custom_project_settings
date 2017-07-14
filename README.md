@@ -9,7 +9,6 @@ Any REDCap extension that needs project-level configuration data can use Custom 
 
 If you are deploying the extension using UF CTS-IT's [redcap_deployment](https://github.com/ctsit/redcap_deployment) tools ([https://github.com/ctsit/redcap_deployment](https://github.com/ctsit/redcap_deployment)), you can activate these extensions with those tools as well.  If you have an environment named `vagrant` the activation would look like this:
 
-    fab instance:vagrant activate_plugin:custom_project_settings
     fab instance:vagrant activate_hook:redcap_every_page_top,cps_hook
 
 
