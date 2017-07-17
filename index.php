@@ -184,22 +184,6 @@ if (empty($_POST)) {
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <input type="text" name="attribute" class="form-text" value="" placeholder="Unique Extension Name"/>
-                                    </td>
-                                    <td>
-                                        <textarea rows="3" name="value" class="form-textarea" value="" placeholder="Configuration data for the extension"></textarea>
-                                        <input type="hidden" class="form-hidden" name="id" value=""/>
-                                    </td>
-                                    <td>
-                                        <div class="btn-holder">
-                                            <div class="delete-holder">
-                                                <button type="button" class="btn btn-delete">Delete</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
                                 <tr class="last-row">
                                     <td>
                                         <button type="button" id="addRow">+</button>
