@@ -304,7 +304,18 @@ if (empty($_POST)) {
                 cps_array[i] = {};
                 cps_array[i].project_id = <?php echo $pid ?>;
                 cps_array[i].attribute = trows[i+1].getElementsByClassName('form-text')[0].value;
-                cps_array[i].value = trows[i+1].getElementsByClassName('form-textarea')[0].value;
+                var val1 = trows[i+1].getElementsByClassName('form-textarea')[0].value;
+                var jsonstring = "";
+                try {
+                    jsonstring = JSON.stringify(JSON.parse(val1));
+                } catch(e) {
+                    var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+                    if(format.test(val1)){
+                      continue;
+                    }
+                    jsonstring = val1;
+                }
+                cps_array[i].value = jsonstring;
                 cps_array[i].id = trows[i+1].getElementsByClassName('form-hidden')[0].value;
             }
             for(var i=0;i<cps_array.length;i++){
@@ -323,8 +334,18 @@ if (empty($_POST)) {
                 var parsedRes = response;
                 var trows = document.getElementById('customTable').getElementsByTagName('tr');
                 for(var i=0;i<parsedRes.length;i++){
+                    var $attributeVal = parsedRes[i].value;
+                    var obj = "";
+                    var pretty = "";
+                    try {
+                        obj = JSON.parse($attributeVal);
+                        pretty = JSON.stringify(obj, undefined, 4);
+                        // console.log(typeof obj);
+                    } catch (e) {
+                        pretty = $attributeVal;
+                    }
                     trows[i+1].getElementsByClassName('form-text')[0].value = parsedRes[i].attribute;
-                    trows[i+1].getElementsByClassName('form-textarea')[0].value = parsedRes[i].value;
+                    trows[i+1].getElementsByClassName('form-textarea')[0].value = pretty;
                     trows[i+1].getElementsByClassName('form-hidden')[0].value = parsedRes[i].id;
                 }
                 /* Temporary fix: Reload page to render latest data.
@@ -361,9 +382,19 @@ if (empty($_POST)) {
         ?>
 
             var i = <?php echo $i; ?>;
+            var $attributeVal = '<?php echo $val; ?>';
+            var obj = "";
+            var pretty = "";
+            try {
+                obj = JSON.parse($attributeVal);
+                pretty = JSON.stringify(obj, undefined, 4);
+                // console.log(typeof obj);
+            } catch (e) {
+                pretty = $attributeVal;
+            }
 
             trows[i].getElementsByClassName('form-text')[0].value = '<?php echo $attr; ?>';
-            trows[i].getElementsByClassName('form-textarea')[0].value = '<?php echo $val; ?>';
+            trows[i].getElementsByClassName('form-textarea')[0].value = pretty;
             trows[i].getElementsByClassName('form-hidden')[0].value = '<?php echo $id; ?>';
         <?php
             $i++;
