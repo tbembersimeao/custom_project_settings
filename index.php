@@ -304,7 +304,19 @@ if (empty($_POST)) {
                 cps_array[i] = {};
                 cps_array[i].project_id = <?php echo $pid ?>;
                 cps_array[i].attribute = trows[i+1].getElementsByClassName('form-text')[0].value;
-                cps_array[i].value = trows[i+1].getElementsByClassName('form-textarea')[0].value;
+                var val1 = trows[i+1].getElementsByClassName('form-textarea')[0].value;
+                var jsonstring = "";
+                try {
+                    jsonstring = JSON.stringify(JSON.parse(val1));
+                } catch(e) {
+                    var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+                    if(format.test(val1)){
+                      continue;
+                    }
+                    jsonstring = val1;
+                    console.log("here with " + val1);
+                }
+                cps_array[i].value = jsonstring;
                 cps_array[i].id = trows[i+1].getElementsByClassName('form-hidden')[0].value;
             }
             for(var i=0;i<cps_array.length;i++){
