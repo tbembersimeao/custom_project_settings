@@ -323,8 +323,18 @@ if (empty($_POST)) {
                 var parsedRes = response;
                 var trows = document.getElementById('customTable').getElementsByTagName('tr');
                 for(var i=0;i<parsedRes.length;i++){
+                    var $attributeVal = parsedRes[i].value;
+                    var obj = "";
+                    var pretty = "";
+                    try {
+                        obj = JSON.parse($attributeVal);
+                        pretty = JSON.stringify(obj, undefined, 4);
+                        // console.log(typeof obj);
+                    } catch (e) {
+                        pretty = $attributeVal;
+                    }
                     trows[i+1].getElementsByClassName('form-text')[0].value = parsedRes[i].attribute;
-                    trows[i+1].getElementsByClassName('form-textarea')[0].value = parsedRes[i].value;
+                    trows[i+1].getElementsByClassName('form-textarea')[0].value = pretty;
                     trows[i+1].getElementsByClassName('form-hidden')[0].value = parsedRes[i].id;
                 }
                 /* Temporary fix: Reload page to render latest data.
@@ -361,9 +371,19 @@ if (empty($_POST)) {
         ?>
 
             var i = <?php echo $i; ?>;
+            var $attributeVal = '<?php echo $val; ?>';
+            var obj = "";
+            var pretty = "";
+            try {
+                obj = JSON.parse($attributeVal);
+                pretty = JSON.stringify(obj, undefined, 4);
+                // console.log(typeof obj);
+            } catch (e) {
+                pretty = $attributeVal;
+            }
 
             trows[i].getElementsByClassName('form-text')[0].value = '<?php echo $attr; ?>';
-            trows[i].getElementsByClassName('form-textarea')[0].value = '<?php echo $val; ?>';
+            trows[i].getElementsByClassName('form-textarea')[0].value = pretty;
             trows[i].getElementsByClassName('form-hidden')[0].value = '<?php echo $id; ?>';
         <?php
             $i++;
