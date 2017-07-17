@@ -314,7 +314,6 @@ if (empty($_POST)) {
                       continue;
                     }
                     jsonstring = val1;
-                    console.log("here with " + val1);
                 }
                 cps_array[i].value = jsonstring;
                 cps_array[i].id = trows[i+1].getElementsByClassName('form-hidden')[0].value;
@@ -382,23 +381,28 @@ if (empty($_POST)) {
                 $id = $item->id;
         ?>
 
-            var i = <?php echo $i; ?>;
-            var $attributeVal = '<?php echo $val; ?>';
-            var obj = "";
-            var pretty = "";
-            try {
-                obj = JSON.parse($attributeVal);
-                pretty = JSON.stringify(obj, undefined, 4);
-                // console.log(typeof obj);
-            } catch (e) {
-                pretty = $attributeVal;
-            }
+                try {
+                    var i = <?php echo $i; ?>;
 
-            trows[i].getElementsByClassName('form-text')[0].value = '<?php echo $attr; ?>';
-            trows[i].getElementsByClassName('form-textarea')[0].value = pretty;
-            trows[i].getElementsByClassName('form-hidden')[0].value = '<?php echo $id; ?>';
+                    var $attributeVal = '<?php echo $val; ?>';
+                    var obj = "";
+                    var pretty = "";
+                    try {
+                        obj = JSON.parse($attributeVal);
+                        pretty = JSON.stringify(obj, undefined, 4);
+                        // console.log(typeof obj);
+                    } catch (e) {
+                        pretty = $attributeVal;
+                    }
+                    
+                    trows[i].getElementsByClassName('form-text')[0].value = '<?php echo $attr; ?>';
+                    trows[i].getElementsByClassName('form-textarea')[0].value = pretty;
+                    trows[i].getElementsByClassName('form-hidden')[0].value = '<?php echo $id; ?>';
+                } catch(e) {
+                    console.log("try failed");
+                }
         <?php
-            $i++;
+                $i++;
             }
         ?>
     }
