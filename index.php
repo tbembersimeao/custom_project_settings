@@ -381,28 +381,23 @@ if (empty($_POST)) {
                 $id = $item->id;
         ?>
 
-                try {
-                    var i = <?php echo $i; ?>;
+            var i = <?php echo $i; ?>;
+            var $attributeVal = '<?php echo $val; ?>';
+            var obj = "";
+            var pretty = "";
+            try {
+                obj = JSON.parse($attributeVal);
+                pretty = JSON.stringify(obj, undefined, 4);
+                // console.log(typeof obj);
+            } catch (e) {
+                pretty = $attributeVal;
+            }
 
-                    var $attributeVal = '<?php echo $val; ?>';
-                    var obj = "";
-                    var pretty = "";
-                    try {
-                        obj = JSON.parse($attributeVal);
-                        pretty = JSON.stringify(obj, undefined, 4);
-                        // console.log(typeof obj);
-                    } catch (e) {
-                        pretty = $attributeVal;
-                    }
-                    
-                    trows[i].getElementsByClassName('form-text')[0].value = '<?php echo $attr; ?>';
-                    trows[i].getElementsByClassName('form-textarea')[0].value = pretty;
-                    trows[i].getElementsByClassName('form-hidden')[0].value = '<?php echo $id; ?>';
-                } catch(e) {
-                    console.log("try failed");
-                }
+            trows[i].getElementsByClassName('form-text')[0].value = '<?php echo $attr; ?>';
+            trows[i].getElementsByClassName('form-textarea')[0].value = pretty;
+            trows[i].getElementsByClassName('form-hidden')[0].value = '<?php echo $id; ?>';
         <?php
-                $i++;
+            $i++;
             }
         ?>
     }
