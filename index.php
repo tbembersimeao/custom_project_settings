@@ -348,7 +348,7 @@ if (empty($_POST)) {
         var cpsDataLength = <?php echo count($cps_data); ?>;
         var trows = document.getElementById('customTable').getElementsByTagName('tr');
         if(trows.length-2 != cpsDataLength){
-            for(var i=2;i<cpsDataLength;i++){
+            for(var i=1;i<cpsDataLength;i++){
                 addNewRow();
             }
         }
