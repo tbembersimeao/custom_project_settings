@@ -1,0 +1,7 @@
+{
+    "name": "Custom Project Settings",
+    "description": "Extension designed save configuration settings for REDCap extensions at the project level.",
+    "version": "1.0",
+    "global": "0",
+    "project_url": "https://github.com/tbembersimeao/custom_project_settings"
+}

@@ -1,12 +1,5 @@
 <?php
-require_once "cps.php";
-
-if (!file_exists('../../redcap_connect.php')) {
-    $REDCAP_ROOT = "/var/www/redcap";
-    require_once $REDCAP_ROOT . '/redcap_connect.php';
-} else {
-    require_once '../../redcap_connect.php';
-}
+require_once "cps.inc";
 
 class cps_lib {
   var $tableName;
