@@ -382,48 +382,48 @@ function custom_project_settings_page() {
  * Page callback for the Custom Project Settings submit handler page.
  */
 function custom_project_settings_submit() {
-	require_once "includes/cps_lib.inc";
-	require_once "includes/cps.inc";
-	
-	$cps_lib = new cps_lib();
+    require_once "includes/cps_lib.inc";
+    require_once "includes/cps.inc";
 
-	// Converts a JSON encoed string into a PHP variable. 
-	$formData = html_entity_decode($_POST['arr']);
-	$formattedData = json_decode($formData);
+    $cps_lib = new cps_lib();
+
+    // Converts a JSON encoed string into a PHP variable. 
+    $formData = html_entity_decode($_POST['arr']);
+    $formattedData = json_decode($formData);
+
+    // Create an array of (cps)objects.
+    $i = 0;
+    $cps_array = array();
+    foreach ($formattedData as $item){
+        $cps = new cps();
+        $cps->attribute = $item->attribute;
+        $cps->value = $item->value;
+        $cps->project_id = $item->project_id;
+        $cps->created_by = 'admin';
+        $cps->id = $item->id;
+        $cps_array[$i] = $cps;
+        $i++;
+    }
 	
-	// Create an array of (cps)objects.
-	$i = 0;
-	$cps_array = array();
-	foreach ($formattedData as $item){
-		$cps = new cps();
-		$cps->attribute = $item->attribute;
-		$cps->value = $item->value;
-		$cps->project_id = $item->project_id;
-		$cps->created_by = 'admin';
-		$cps->id = $item->id;
-		$cps_array[$i] = $cps;
-		$i++;
-	}
-	
-	// Save data.
-	$cps_lib->save($cps_array);
-	$pid = reset($cps_array)->project_id;
-	$cps_data = $cps_lib->getDataByProjectId($pid); 
-	print_r(json_encode($cps_data));  	
+    // Save data.
+    $cps_lib->save($cps_array);
+    $pid = reset($cps_array)->project_id;
+    $cps_data = $cps_lib->getDataByProjectId($pid); 
+    print_r(json_encode($cps_data));  	
 }
 
 /**
  * Page callback for the Custom Project Settings delete handler page.
  */
 function custom_project_settings_delete() {
-	require_once "includes/cps_lib.php";
-	require_once "includes/cps.php";
+    require_once "includes/cps_lib.php";
+    require_once "includes/cps.php";
 	
-	$cps_lib = new cps_lib();
+    $cps_lib = new cps_lib();
 
-	$id = $_POST['id'];
+    $id = $_POST['id'];
 
-	// Delete data
-	$cps_lib->deleteData($id);
+    // Delete data
+    $cps_lib->deleteData($id);
 }
 ?>
