@@ -1,6 +1,19 @@
 <?php
 
 /**
+ * Implements hook_xman_plugins().
+ */
+function custom_project_settings_xman_plugins() {
+    include_once 'includes/pages.inc';
+
+    return array(
+        'plugins/custom_project_settings/index.php' => 'custom_project_settings_page',
+        'plugins/custom_project_settings/submit.php' => 'custom_project_settings_submit',
+        'plugins/custom_project_settings/delete.php' => 'custom_project_settings_delete',
+    );
+}
+
+/**
  * Implements hook_redcap_every_page_top().
  */
 function custom_project_settings_redcap_every_page_top($project_id) {
