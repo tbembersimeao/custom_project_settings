@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Main file of Custom Project Settings extension.
+ */
 
 /**
  * Implements hook_xman_plugins().
